@@ -63,7 +63,7 @@ router.get("/keys", async (req, res) => {
   const provider = req.query.provider;
   try {
     const keys = await prisma.apiKey.findMany({
-      where: provider ? { provider } : {},
+      where: provider ? { provider: provider } : {},
       // where: { slug: provider ? provider.toLowerCase() : undefined },
       orderBy: { firstFound: "desc" },
     });
@@ -103,12 +103,6 @@ router.post("/key/:id/view", async (req, res) => {
   }
 });
 
-// POST /key/:id/verify
-// Verify if the API key is valid
-// in the frontend, we call this endpoint with the key ID and the API key value
-// router.post("/key/:id/verify", async (req, res) => {
-// });
-
 // get all providers
 router.get("/providers", async (req, res) => {
   try {
@@ -121,5 +115,11 @@ router.get("/providers", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch providers" });
   }
 });
+
+// POST /key/:id/verify
+// Verify if the API key is valid
+// in the frontend, we call this endpoint with the key ID and the API key value
+// router.post("/key/:id/verify", async (req, res) => {
+// });
 
 module.exports = router;
