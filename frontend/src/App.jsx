@@ -1,18 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { useTheme } from "./components/theme-provider";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import Home from "./components/Pages/Home";
+import Navbar from "./components/Pages/Navbar";
 
 function App() {
-  const { theme, setTheme } = useTheme();
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-5">
-      <Button>Click me</Button>
-      <Switch
-        onCheckedChange={() => {
-          setTheme(theme === "dark" ? "light" : "dark");
-        }}
-      />
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
