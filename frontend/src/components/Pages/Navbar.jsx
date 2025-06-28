@@ -65,7 +65,7 @@ const Navbar = () => {
   return (
     <div
       className="flex items-center justify-between py-2 px-6"
-      style={{ position: "sticky", top: 0, zIndex: 1000 }}
+      style={{ position: "relative", top: 0, zIndex: 1000 }}
     >
       {/* Logo */}
       <Link href="/" className="text-lg font-bold">
