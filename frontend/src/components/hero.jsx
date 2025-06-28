@@ -16,6 +16,8 @@ const Hero = React.forwardRef(
       titleClassName,
       subtitleClassName,
       actionsClassName,
+      setIsRandom,
+      isRandom,
       ...props
     },
     ref
@@ -140,6 +142,11 @@ const Hero = React.forwardRef(
                     key={index}
                     variant={action.variant || "default"}
                     asChild
+                    onClick={() => {
+                      if (action.label === "Get Random Key") {
+                        setIsRandom(true);
+                      }
+                    }}
                   >
                     <Link href={action.href}>{action.label}</Link>
                   </Button>

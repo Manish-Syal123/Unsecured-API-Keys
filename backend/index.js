@@ -3,7 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+app.use(cors("*")); // Allow all origins for development purposes
 app.use(express.json());
 
 const apiRoutes = require("./routes/api");
