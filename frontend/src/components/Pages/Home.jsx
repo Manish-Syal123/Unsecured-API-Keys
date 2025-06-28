@@ -13,9 +13,10 @@ import {
 import { KeysContext } from "../../context/KeysContext";
 
 const Home = () => {
-  const [isRandom, setIsRandom] = useState(false);
+  const [isRandom, setIsRandom] = useState(true);
   const [selectedProvider, setSelectedProvider] = useState("");
   const { allKeysData, allProviders } = useContext(KeysContext);
+
   const handleOnSelect = (value) => {
     console.log("Selected value:", value);
     setSelectedProvider(value);
@@ -26,6 +27,7 @@ const Home = () => {
       <Hero
         setIsRandom={setIsRandom}
         isRandom={isRandom}
+        setSelectedProvider={setSelectedProvider}
         title="Unsecured"
         subtitle={'The Wall  of "Well, That Wasn\'t Supposed to Go Live"'}
         actions={[
@@ -45,7 +47,10 @@ const Home = () => {
         actionsClassName="mt-8"
       />
       <div className="flex items-center justify-center mb-4">
-        <Select onValueChange={(value) => handleOnSelect(value)}>
+        <Select
+          value={selectedProvider}
+          onValueChange={(value) => handleOnSelect(value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a Provider" />
           </SelectTrigger>

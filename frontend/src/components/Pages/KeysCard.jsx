@@ -29,6 +29,7 @@ const KeysCard = ({ selectedProvider }) => {
           );
           const data = response.data;
           console.log("Provider Details:", data);
+          setProviderDetails(data);
         } catch (error) {
           console.error("Error fetching provider details:", error);
         } finally {
@@ -47,7 +48,7 @@ const KeysCard = ({ selectedProvider }) => {
         </div>
       )}
       <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2.5">
-        {[1, 2, 3, 4, 5].map((item, index) => (
+        {providerDetails?.map((item, index) => (
           <Dialog key={index}>
             <DialogTrigger>
               {/* Grid */}
@@ -55,9 +56,9 @@ const KeysCard = ({ selectedProvider }) => {
                 {/*Provider, View , status, foundfirst. will sort based on found first*/}
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-white text-lg font-semibold mb-2">
-                    Provider: prov
+                    Provider: {item.provider}
                   </h2>
-                  <p className="text-gray-300">View: 23 </p>
+                  <p className="text-gray-300">View: {item.views} </p>
                 </div>
                 <hr />
                 <div className="flex justify-center items-center mt-4">
@@ -68,17 +69,44 @@ const KeysCard = ({ selectedProvider }) => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Provider</DialogTitle>
+                <DialogTitle>Provider: {item.provider} </DialogTitle>
                 <DialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
+                  <div className="space-y-4">
+                    <p>
+                      <strong>Key:</strong> {item.key}
+                    </p>
+                    <p>
+                      <strong>filePath:</strong> {item.filePath}
+                    </p>
+                    <p>
+                      <strong>owner:</strong> {item.owner}
+                    </p>
+                    <p>
+                      <strong>Found First:</strong> {item.firstFound}
+                    </p>
+                    <p>
+                      <strong>Found First:</strong> {item.repoName}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {item.status}
+                    </p>
+                    <p>
+                      <strong>View Count:</strong> {item.views}
+                    </p>
+                    <p>
+                      <strong>lineNumber:</strong> {item.lineNumber}
+                    </p>
+                    <p>
+                      <strong>verifiedAt:</strong> {item.verifiedAt}
+                    </p>
+                  </div>
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button>close</Button>
                 </DialogClose>
-                <Button type="submit">Save changes</Button>
+                {/* <Button type="submit">Save changes</Button> */}
               </DialogFooter>
             </DialogContent>
           </Dialog>

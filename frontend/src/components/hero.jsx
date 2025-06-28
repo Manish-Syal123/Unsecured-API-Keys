@@ -17,6 +17,7 @@ const Hero = React.forwardRef(
       subtitleClassName,
       actionsClassName,
       setIsRandom,
+      setSelectedProvider,
       isRandom,
       ...props
     },
@@ -145,6 +146,7 @@ const Hero = React.forwardRef(
                     onClick={() => {
                       if (action.label === "Get Random Key") {
                         setIsRandom(true);
+                        setSelectedProvider("");
                       }
                     }}
                   >
