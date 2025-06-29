@@ -11,11 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { KeysContext } from "../../context/KeysContext";
+import RandomKeyCard from "./RandomKeyCard";
 
 const Home = () => {
   const [isRandom, setIsRandom] = useState(true);
   const [selectedProvider, setSelectedProvider] = useState("");
-  const { allKeysData, allProviders } = useContext(KeysContext);
+  const { allProviders } = useContext(KeysContext);
 
   const handleOnSelect = (value) => {
     console.log("Selected value:", value);
@@ -69,17 +70,7 @@ const Home = () => {
       </div>
 
       {isRandom ? (
-        <div className="container mx-auto px-4 py-2.5 max-w-4xl border rounded-md shadow-lg bg-white h-[35rem] mb-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-gray-800 text-lg font-semibold">Random</h2>
-            <button
-              className="text-gray-600 hover:text-gray-800"
-              onClick={() => setIsRandom(false)}
-            >
-              View All
-            </button>
-          </div>
-        </div>
+        <RandomKeyCard isRandom={isRandom} />
       ) : (
         //container for the main content
         <>
