@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { KeysContext } from "../../context/KeysContext";
-import { Copy, Eye, ExternalLink } from "lucide-react";
+import { Copy, Eye, ExternalLink, KeyRound, ScanSearch } from "lucide-react";
+import { Button } from "../ui/button";
+import axios from "axios";
 
 const RandomKeyCard = ({ isRandom }) => {
   const { allKeysData } = useContext(KeysContext);
   const [randomKeyData, setRandomKeyData] = React.useState(null);
   const [copied, setCopied] = useState(false);
+  const [HideKey, setHideKey] = useState(true);
 
   // Helper function to calculate age string from firstFound date
   function calculateAge(firstFound) {
@@ -44,10 +47,12 @@ const RandomKeyCard = ({ isRandom }) => {
     // Set random key immediately on mount
     const initialRandomKey = getRandomKey();
     setRandomKeyData(initialRandomKey);
+    setHideKey(true);
 
     const interval = setInterval(() => {
       const newRandomKey = getRandomKey();
       setRandomKeyData(newRandomKey);
+      setHideKey(true);
     }, 60000); // Update every 60 seconds
     return () => clearInterval(interval); // Cleanup on unmount
   }, [allKeysData, isRandom]);
@@ -66,8 +71,34 @@ const RandomKeyCard = ({ isRandom }) => {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const handleVerifyKey = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACE_URL}/key/${randomKeyData?.id}/verify`
+      );
+      if (response.data.success) {
+        alert("Key verified successfully!");
+      } else {
+        alert("Key verification failed.");
+      }
+    } catch (error) {
+      console.error("Error verifying key:", error);
+    }
+  };
+  const handleShowKey = async () => {
+    setHideKey(!HideKey);
+    // increment the views count for the key
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACE_URL}/key/${randomKeyData?.id}/view`
+      );
+      randomKeyData.views += 1; // Update the views count locally
+    } catch (error) {
+      console.error("Error incrementing views:", error);
+    }
+  };
   return (
-    <div className="container mx-auto px-4 py-2.5 max-w-4xl border rounded-md shadow-lg h-[30rem] mb-5">
+    <div className="container mx-auto px-4 py-2.5 max-w-4xl border-2 border-white rounded-md shadow-lg  mb-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold inline-flex items-center gap-2">
           Exposed Key!!{" "}
@@ -83,16 +114,31 @@ const RandomKeyCard = ({ isRandom }) => {
       <div className="inline-flex items-center justify-between gap-2 border border-default px-4 py-2 rounded-lg bg-transparent w-full text-base text-foreground">
         <pre className="font-mono text-inherit bg-transparent whitespace-normal break-all">
           <span className="select-none">$ </span>
-          <span>{randomKeyData?.key}</span>
+          <span className={HideKey && "filter blur-sm"}>
+            {randomKeyData?.key}
+          </span>
         </pre>
-        <button
-          type="button"
-          aria-label="Copy to clipboard"
-          onClick={handleCopy}
-          className="relative group inline-flex items-center justify-center w-8 h-8 rounded-sm text-lg text-inherit hover:bg-transparent transition"
-        >
-          <Copy />
-        </button>
+        {!HideKey && (
+          <button
+            type="button"
+            aria-label="Copy to clipboard"
+            onClick={handleCopy}
+            className="relative group cursor-pointer inline-flex items-center justify-center w-8 h-8 rounded-sm text-lg text-inherit hover:bg-transparent transition"
+          >
+            <Copy className="hover:text-green-500" />
+          </button>
+        )}
+        {HideKey && (
+          <Button
+            className="bg-accent cursor-pointer text-accent-foreground hover:bg-accent/90"
+            onClick={handleShowKey}
+          >
+            <div className="flex items-center gap-2">
+              <KeyRound size={18} />
+              Show Key
+            </div>
+          </Button>
+        )}
       </div>
       {/* Details section */}
       <div className="mt-9">
@@ -158,7 +204,7 @@ const RandomKeyCard = ({ isRandom }) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <code className="px-2 py-1 rounded bg-slate-400 text-sm font-bold">
+                <code className="px-2 py-1 rounded bg-accent text-sm font-bold">
                   {randomKeyData?.filePath}
                 </code>
                 <ExternalLink size={20} />
@@ -172,7 +218,13 @@ const RandomKeyCard = ({ isRandom }) => {
           <span className="font-semibold text-default-700 block mb-2">
             Context:
           </span>
-          <code className="block p-3 text-sm font-mono rounded bg-default-100 dark:bg-default-50 break-all whitespace-pre-wrap max-w-full text-default-700">
+          <code
+            className={
+              HideKey
+                ? "filter blur-xs"
+                : "block p-3 text-sm font-mono rounded bg-default-100 dark:bg-default-50 break-all whitespace-pre-wrap max-w-full text-default-700"
+            }
+          >
             {randomKeyData?.context}
           </code>
           <p className="mt-2 text-sm text-default-400">
@@ -180,6 +232,20 @@ const RandomKeyCard = ({ isRandom }) => {
           </p>
         </div>
       </div>
+
+      {!HideKey && (
+        <div className="mt-3 flex items-center justify-end">
+          <Button
+            onClick={handleVerifyKey}
+            className="p-2 rounded-4xl cursor-pointer hover:bg-accent/90 hover:text-accent-foreground"
+          >
+            <div className="flex items-center gap-2 text-center">
+              <ScanSearch size={19} />
+              Verify Key
+            </div>
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
